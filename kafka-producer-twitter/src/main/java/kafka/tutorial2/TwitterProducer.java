@@ -1,6 +1,6 @@
-package com.github.lina.kafka.tutorial2;
+package kafka.tutorial2;
 
-import com.github.lina.kafka.twitter.TwitterConfig;
+
 import com.google.common.collect.Lists;
 import com.twitter.hbc.ClientBuilder;
 import com.twitter.hbc.core.Client;
@@ -11,6 +11,7 @@ import com.twitter.hbc.core.endpoint.StatusesFilterEndpoint;
 import com.twitter.hbc.core.processor.StringDelimitedProcessor;
 import com.twitter.hbc.httpclient.auth.Authentication;
 import com.twitter.hbc.httpclient.auth.OAuth1;
+import kafka.twitter.TwitterConfig;
 import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
@@ -29,7 +30,7 @@ public class TwitterProducer {
     String token = TwitterConfig.TOKEN;
     String secret = TwitterConfig.TOKEN_SECRET;
     // Optional: set up some followings and track terms
-    List<String> terms = Lists.newArrayList("kafka");
+    List<String> terms = Lists.newArrayList("Modi");
     
     public TwitterProducer(){}
 
@@ -91,6 +92,18 @@ public class TwitterProducer {
         properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
         properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+
+        // create Safe Producer
+        properties.setProperty(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG,"true");
+        properties.setProperty(ProducerConfig.ACKS_CONFIG,"all");
+        properties.setProperty(ProducerConfig.RETRIES_CONFIG, Integer.toString(Integer.MAX_VALUE));
+        properties.setProperty(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, "5"); // kafka 2.3 > 1.1 so we can keep this as 5 KAFKA-5494
+
+
+        // high throughput producer (at the expense of a bit of latency  and CPU Usage)
+        properties.setProperty(ProducerConfig.COMPRESSION_TYPE_CONFIG,"snappy");
+        properties.setProperty(ProducerConfig.LINGER_MS_CONFIG, "20");
+        properties.setProperty(ProducerConfig.BATCH_SIZE_CONFIG, Integer.toString(32*1024));
 
         //Create Producer
         KafkaProducer<String, String> kafkaProducer = new KafkaProducer<String, String>(properties);
