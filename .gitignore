@@ -8,6 +8,7 @@
 
 #Files
 src/main/java/com/github/lina/kafka/twitter/TwitterConfig.java
+<<<<<<< HEAD
 TwitterConfig.java
 kafka-producer-twitter/src/main/java/kafka/twitter/TwitterConfig.java
 
@@ -15,3 +16,10 @@ kafka-producer-twitter/src/main/java/kafka/twitter/TwitterConfig.java
 log/
 target/TwitterConfig.java
 target/
+=======
+src\main\java\com\github\lina\kafka\twitter\TwitterConfig.java
+
+# Maven
+log/
+target/
+>>>>>>> be585e1d29233710f20fea115e66ff5212ca98e7
